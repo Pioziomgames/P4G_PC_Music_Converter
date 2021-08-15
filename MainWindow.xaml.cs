@@ -265,7 +265,7 @@ namespace P4G_PC_Music_Converter
             }
 
             // If looping is enabled, ensure that the loop start and end textboxes contain valid numbers
-            if (LoopEnable.IsChecked.Value)
+            if (LoopEnable.IsChecked.Value && FullLoop.IsChecked == false)
             {
                 if (!int.TryParse(LoopStart.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out int _) ||
                     int.Parse(LoopStart.Text, NumberStyles.Integer) < 0)
@@ -283,7 +283,7 @@ namespace P4G_PC_Music_Converter
             }
 
             string encodedInputPath;
-            if (!EncodingPassthrough.IsChecked.Value)
+            if (!EncodingPassthrough.IsChecked.Value )
             {
                 encodedInputPath = OutputRawPath.Text;
 
@@ -362,7 +362,7 @@ namespace P4G_PC_Music_Converter
 
 
                 // Verify and adjust the loop points if needed, to conform to block sample alignment
-                if (LoopEnable.IsChecked.Value)
+                if (LoopEnable.IsChecked.Value && FullLoop.IsChecked == false)
                 {
                     int samplesPerBlock = waveReader.WaveFormat.BlockAlign - (6 * waveReader.WaveFormat.Channels);
 
@@ -435,6 +435,11 @@ namespace P4G_PC_Music_Converter
                     outputInfoBuilder.Append($"loop_end_sample = {loopEnd}\n");
                 }
 
+                if (FullLoop.IsChecked == true)
+                {
+                    outputInfoBuilder.Append($"loop_start_sample = 0\n");
+                    outputInfoBuilder.Append($"loop_end_sample = {sampleCount}\n");
+                }
                 OutputFileInfo.Text = outputInfoBuilder.ToString();
 
                 // Setup an output TXTH file in the same location as the output RAW file
